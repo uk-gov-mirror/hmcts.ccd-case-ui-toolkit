@@ -16,7 +16,7 @@ export class CasePrintDocumentsResolver implements Resolve<CasePrintDocument[]> 
 
   resolve(route: ActivatedRouteSnapshot): Observable<CasePrintDocument[]> {
     let caseDetails: CaseView = route.parent.data.case;
-
+    console.log('In resolver...');
     return this.casesService
       .getPrintDocuments(caseDetails.case_type.jurisdiction.id, caseDetails.case_type.id, caseDetails.case_id)
       .map(documents => {

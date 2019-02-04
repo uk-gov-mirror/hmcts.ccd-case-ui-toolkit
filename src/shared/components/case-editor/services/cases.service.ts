@@ -6,7 +6,7 @@ import { Headers } from '@angular/http';
 import { OrderService, HttpService, HttpErrorService } from '../../../services';
 import { ShowCondition } from '../../../directives/conditional-show/domain/conditional-show.model';
 import { catchError, map, tap } from 'rxjs/operators';
-import { CaseView, CaseEventTrigger, CaseEventData, CasePrintDocument, Draft } from '../../../domain';
+import {CaseView, CaseEventTrigger, CaseEventData, CasePrintDocument, Draft, HttpError} from '../../../domain';
 import { WizardPage, WizardPageField } from '../domain';
 
 @Injectable()
@@ -171,6 +171,7 @@ export class CasesService {
       + `/case-types/${caseTypeId}`
       + `/cases/${caseId}`
       + `/documents`;
+    console.log('Printable document URL: ' + url);
 
     return this.http
       .get(url)
@@ -180,7 +181,11 @@ export class CasesService {
           this.errorService.setError(error);
           return throwError(error);
         })
-      );
+      )
+      .catch((error: HttpError) => {
+        console.log('URL error');
+        return Observable.throw(error);
+      });
   }
 
   private buildEventTriggerUrl(caseTypeId: string,

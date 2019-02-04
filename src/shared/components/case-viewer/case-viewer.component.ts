@@ -18,6 +18,7 @@ import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
+import {CasesService} from '../case-editor/services';
 
 @Component({
   templateUrl: './case-viewer.component.html',
@@ -40,6 +41,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   ignoreWarning = false;
   subscription: Subscription;
   dialogConfig: MatDialogConfig;
+  printableDocumentExist = false;
 
   callbackErrorsSubject: Subject<any> = new Subject();
 
@@ -50,7 +52,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private activityPollingService: ActivityPollingService,
     private dialog: MatDialog,
     private alertService: AlertService,
-    private draftService: DraftService
+    private draftService: DraftService,
+    private casesService: CasesService
   ) {}
 
   ngOnInit(): void {
@@ -68,6 +71,8 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.subscription = this.postViewActivity().subscribe((_resolved) => {
       // console.log('Posted VIEW activity and result is: ' + JSON.stringify(resolved));
     });
+
+    this.isPrintableDocumentExist();
   }
 
   ngOnDestroy() {
@@ -175,5 +180,26 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
       console.log(error);
       this.callbackErrorsSubject.next(this.error);
     }
+  }
+
+  isPrintableDocumentExist(): void {
+    console.log('In printableDocumentExist(): ');
+    this.casesService
+      .getPrintDocuments(this.caseDetails.case_type.jurisdiction.id, this.caseDetails.case_type.id, this.caseDetails.case_id)
+      .map(documents => {
+        console.log('documents:::');
+        console.log(documents);
+        if (documents && documents.length) {
+          console.log('documents length: ' + documents.length);
+          this.printableDocumentExist = true;
+        } else {
+          this.printableDocumentExist = false;
+        }
+      })
+      .catch((error: HttpError) => {
+        this.alertService.error(error.message);
+        console.log('Error occurred in printableDocumentExists...');
+        return Observable.throw(error);
+      });   // remove this catch
   }
 }
