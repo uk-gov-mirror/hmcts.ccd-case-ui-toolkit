@@ -25,13 +25,30 @@ app.use(function (req, res) {
       } else if (req.url.indexOf('profile') !== -1) {
         response = db.get('profile').value();
       } else if (req.url.indexOf('event-triggers/enterCaseIntoLegacy') !== -1) {
-        response = db.get('event-trigger').value();
+        response = db.get('event-trigger_EnterCaseIntoLegacy').value();
+      } else if (req.url.indexOf('event-triggers/stopCase') !== -1) {
+        response = db.get('event-trigger_StopCase').value();
+      } else if (req.url.indexOf('internal/cases/1111222233334444/events') !== -1) {
+        response = db.get('history').value();
       } else if (req.url.indexOf('internal/cases/1111222233334444') !== -1) {
         response = db.get('case').value();
-      } 
+      } else if (req.url.indexOf('/documents') !== -1) {
+        response = db.get('documents').value();
+      } else if (req.url.indexOf('CT0/inputs') !== -1) {
+        response = db.get('CT0inputs').value();
+      } else if (req.url.indexOf('CT2/inputs') !== -1) {
+        response = db.get('CT2inputs').value();
+      } else if (req.url.indexOf('CT3/inputs') !== -1) {
+        response = db.get('CT3inputs').value();
+      }
     }
     if (response) {
-      res.jsonp(response);
+      // history opens in new tab
+      if (req.url.indexOf('history') !== -1) {
+        res.sendFile(path.join(__dirname+'/dist/browser/index.html'));
+      } else {
+        res.jsonp(response);
+      }
     } else {
       res.sendFile(path.join(__dirname+'/dist/browser/index.html'));
     }

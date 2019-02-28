@@ -1,4 +1,46 @@
 ## RELEASE NOTES
+### Version 2.29.0 - February 28 2019
+**RDM-3916** - Move create case filters to toolkit and implement new contract
+
+### Version 2.27.1 - February 22 2019
+**RDM-3430** - Run polling outside angular zone
+
+### Version 2.27.0 - February 21 2019
+**RDM-2986** - New ComplexType to Events mapping
+
+### Version 2.26.0 - February 19 2019
+**RDM-3915** - Extract Case Create filters component as is
+
+### Version 2.25.0 - February 13 2019
+**RDM-3820** - New contract - extract Case Search Form component
+
+### Version 2.24.1 - February 13 2019
+**RDM-2963** changed initialisation values to null 
+
+### Version 2.24.0 - February 12 2019
+**RDM-3821** - Extract Case Search Form to ui-toolkit as is
+
+### Version 2.23.5 - February 08 2019
+**Test Fixes** - Upgrade to Chrome Headless
+
+### Version 2.23.4 - February 08 2019
+**RDM-3675** - fix to image sourcing
+
+### Version 2.23.3 Beta-v3 - February 07 2019
+**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes Beta-v3
+
+### Version 2.23.2 Beta-v2 - February 07 2019
+**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes Beta-v2
+
+### Version 2.23.1 Beta - February 07 2019
+**RDM-3695/RDM-3752** - CRUD contract on Collection Items FE Changes Beta
+
+### Version 2.23.0 - February 06 2019
+**RDM-3799** - New case view contract.
+**RDM-3545** - Case Linking - Error text missing when value input into field of type CaseLink fails validation on event
+
+### Version 2.22.2 - Beta Release - February 02 2019
+**RDM-3849** - Fixed hide show not enabled
 
 ### Version 2.22.0 - January 25 2019
 **RDM-3675** - Extraction of Case View into toolkit
@@ -18,7 +60,7 @@
 
 ### Version 2.20.0 - January 9 2019
 **RDM-2455** - CRUD contract on Collection Items - Standard API
- 
+
 ### Version 2.19.1 - January 9 2019
 **RDM-3594** - Fix failed regex (callback) validation not being displayed in the Error Box
 

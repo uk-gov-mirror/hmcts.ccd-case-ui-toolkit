@@ -18,9 +18,11 @@ import { AlertService } from '../../services/alert';
 import { CallbackErrorsContext } from '../../components/error/domain';
 import { DraftService } from '../../services/draft';
 import { MatDialog, MatDialogConfig } from '@angular/material';
-import {CasesService} from '../case-editor/services';
+import { CaseService } from '../case-editor';
+import { NgZone } from '@angular/core';
 
 @Component({
+  selector: 'ccd-case-viewer',
   templateUrl: './case-viewer.component.html',
   styleUrls: ['./case-viewer.scss']
 })
@@ -46,6 +48,7 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
   callbackErrorsSubject: Subject<any> = new Subject();
 
   constructor(
+    private ngZone: NgZone,
     private route: ActivatedRoute,
     private router: Router,
     private orderService: OrderService,
@@ -53,14 +56,33 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     private dialog: MatDialog,
     private alertService: AlertService,
     private draftService: DraftService,
-    private casesService: CasesService
+    private caseService: CaseService
   ) {}
 
-  ngOnInit(): void {
+  ngOnInit() {
     this.initDialog();
+    if (!this.route.snapshot.data.case) {
+      this.caseService.caseViewSource.asObservable().subscribe(caseDetails => {
+        this.caseDetails = caseDetails;
+        this.init();
+      });
+    } else {
+      this.caseDetails = this.route.snapshot.data.case;
+      this.init();
+    }
+  }
 
-    this.caseDetails = this.route.snapshot.data.case;
+  ngOnDestroy() {
+    if (this.activityPollingService.isEnabled) {
+      this.subscription.unsubscribe();
+    }
+  }
 
+  postViewActivity(): Observable<Activity[]> {
+    return this.activityPollingService.postViewActivity(this.caseDetails.case_id);
+  }
+
+  private init() {
     // Clone and sort tabs array
     this.sortedTabs = this.orderService.sort(this.caseDetails.tabs);
 
@@ -68,6 +90,13 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
 
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
 
+    if (this.activityPollingService.isEnabled) {
+      this.ngZone.runOutsideAngular( () => {
+        this.subscription = this.postViewActivity().subscribe((_resolved) => {
+          // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
+        });
+      });
+    }
     this.subscription = this.postViewActivity().subscribe((_resolved) => {
       // console.log('Posted VIEW activity and result is: ' + JSON.stringify(resolved));
     });
@@ -139,6 +168,27 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
         this.handleError(error, trigger)
       });
     }
+  }
+
+  isDataLoaded(): boolean {
+    return this.caseDetails ? true : false;
+  }
+
+  callbackErrorsNotify(callbackErrorsContext: CallbackErrorsContext) {
+    this.ignoreWarning = callbackErrorsContext.ignore_warning;
+    this.triggerText = callbackErrorsContext.trigger_text;
+  }
+
+  private getTabFields(): CaseField[] {
+    const caseDataFields = this.sortedTabs.reduce((acc, tab) => {
+      return acc.concat(tab.fields);
+    }, []);
+
+    return caseDataFields.concat(this.caseDetails.metadataFields);
+  }
+
+  isDraft(): boolean {
+    return Draft.isDraft(this.caseDetails.case_id);
   }
 
   private initDialog() {
