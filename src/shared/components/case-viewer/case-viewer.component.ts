@@ -90,11 +90,9 @@ export class CaseViewerComponent implements OnInit, OnDestroy {
     this.sortedTabs = this.sortTabFieldsAndFilterTabs(this.sortedTabs);
 
     if (this.activityPollingService.isEnabled) {
-      this.ngZone.runOutsideAngular( () => {
         this.subscription = this.postViewActivity().subscribe((_resolved) => {
           // console.log('Posted VIEW activity and result is: ' + JSON.stringify(_resolved));
         });
-      });
     }
   }
 
