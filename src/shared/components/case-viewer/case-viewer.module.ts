@@ -9,7 +9,7 @@ import { CaseHeaderModule } from '../case-header';
 import { CaseHistoryModule } from '../case-history';
 import { EventTriggerModule } from '../event-trigger/event-trigger.module';
 import { TabsModule } from '../../../components/tabs';
-import { PaletteModule } from '../palette';
+import { PaletteModule, EventLogModule } from '../palette';
 import { LabelSubstitutorModule, ConditionalShowModule } from '../../directives';
 import { CasePrinterComponent, PrintUrlPipe } from './printer';
 import { CaseEventTriggerComponent } from './case-event-trigger';
@@ -27,7 +27,6 @@ import { EventLogModule } from '../palette/history/event-log';
         ActivityModule,
         CaseHeaderModule,
         EventTriggerModule,
-        EventLogModule,
         TabsModule,
         PaletteModule,
         LabelSubstitutorModule,
@@ -35,6 +34,7 @@ import { EventLogModule } from '../palette/history/event-log';
         PipesModule,
         ConditionalShowModule,
         CaseHistoryModule,
+        EventLogModule,
     ],
     declarations: [
         CaseEventTriggerComponent,

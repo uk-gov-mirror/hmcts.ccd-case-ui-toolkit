@@ -1,5 +1,24 @@
 ## RELEASE NOTES
 
+### Version 2.37.0 - March 15 2019
+**RDM-2348** - Grey bar for on same page hide and show of fields
+
+### Version 2.36.1 - March 15 2019
+**RDM-4177** - Event Selector fix
+
+### Version 2.36.0 - March 14 2019
+**RDM-4177** - New Event Selector contract
+
+### Version 2.35.0 - March 12 2019
+**RDM-4187** - Add new Case Timeline Component
+
+### Version 2.34.0 - March 11 2019
+**RDM-3699** - Font size inconsistencies throughout CCD
+
+### Version 2.33.0 - March 7 2019
+**RDM-4233** - demo case progression fix
+**RDM-4109** - flexible case history tab component
+
 ### Version 2.32.0 - March 6 2019
 **RDM-3471** - As a user I am able to view collections in table (columns) without accordions
 **RDM-3472** - As a user I can expand/collapse collection table rows - case details
