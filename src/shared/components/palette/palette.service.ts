@@ -36,11 +36,14 @@ import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.com
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } from './fixed-radio-list';
 import { CaseHistoryViewerFieldComponent } from './history';
+import { WriteDocumentAssemblerFieldComponent, ReadDocumentAssemblerFieldComponent } from './document-assembler';
 
 @Injectable()
 export class PaletteService {
 
   getFieldComponentClass(caseField: CaseField, write: boolean): Type<{}> {
+    // console.log('caseField=', caseField);
+    // console.log('write=', write);
     switch (caseField.field_type.type) {
       case 'Text':
       case 'Postcode':
@@ -88,6 +91,8 @@ export class PaletteService {
         return CasePaymentHistoryViewerFieldComponent;
       case 'CaseHistoryViewer':
         return CaseHistoryViewerFieldComponent;
+      case 'DocumentAssembler':
+        return write ? WriteDocumentAssemblerFieldComponent : ReadDocumentAssemblerFieldComponent;
       default:
         return UnsupportedFieldComponent;
     }

@@ -10,6 +10,7 @@ export class FieldType {
   min?: number;
   max?: number;
   regular_expression?: string;
+  field_type_parameter?: string;
 
   @Type(() => FixedListItem)
   fixed_list_items?: FixedListItem[];
