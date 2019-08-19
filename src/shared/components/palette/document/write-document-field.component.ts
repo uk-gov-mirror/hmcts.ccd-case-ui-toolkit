@@ -1,11 +1,12 @@
 import { Component, OnInit, ViewChild, ElementRef, HostListener } from '@angular/core';
 import { AbstractFieldWriteComponent } from '../base-field/abstract-field-write.component';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormArray, FormControl, FormGroup, Validators} from '@angular/forms';
 import { DocumentManagementService } from '../../../services/document-management/document-management.service';
 import { HttpError } from '../../../domain/http/http-error.model';
 import { MatDialog, MatDialogConfig } from '@angular/material';
 import { DocumentDialogComponent } from '../../dialogs/document-dialog/document-dialog.component';
 import { Constants } from '../../../commons/constants'
+import { FormGroupHelper } from '../../../commons/form-group-helper';
 
 @Component({
   selector: 'ccd-write-document-field',
@@ -54,9 +55,9 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
 
   ngOnInit() {
     this.initDialog();
-    let document = this.caseField.value;
-
+    let document = this.getDocument();
     if (document) {
+      this.caseField.value = document;
       this.createDocumentGroup(
         document.document_url,
         document.document_binary_url,
@@ -71,6 +72,13 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     }
   }
 
+  private getDocument (): any {
+    // caseValue: Document values coming from not submitted case.
+    // this.caseField.value;: Document values coming from submitted case.
+    let caseValue = new FormGroupHelper().findControlValueFromFromGroup('caseValue', this.formGroup);
+    let document =  caseValue || this.caseField.value;
+    return document;
+  }
   fileValidations () {
 
     if (this.isAMandatoryComponent()) {
@@ -135,7 +143,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
             this.uploadedDocument = this.registerControl(new FormGroup({
               document_url: new FormControl(WriteDocumentFieldDefinitions.DOCUMENT_URL),
               document_binary_url: new FormControl(WriteDocumentFieldDefinitions.DOCUMENT_BINARY_URL),
-              document_filename: new FormControl(WriteDocumentFieldDefinitions.DOCUMENT_FILENAME)
+              document_filename: new FormControl(WriteDocumentFieldDefinitions.DOCUMENT_FILENAME),
+              caseValue: new FormControl(null)
             }));
         }
         let document = result._embedded.documents[0];
@@ -172,7 +181,8 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
       this.uploadedDocument = this.registerControl(new FormGroup({
         document_url: new FormControl(url, Validators.required),
         document_binary_url: new FormControl(binaryUrl, Validators.required),
-        document_filename: new FormControl(filename, Validators.required)
+        document_filename: new FormControl(filename, Validators.required),
+        caseValue: new FormControl(null, null )
       }));
     }
   }
@@ -181,6 +191,13 @@ export class WriteDocumentFieldComponent extends AbstractFieldWriteComponent imp
     this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_URL).setValue(url);
     this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_BINARY_URL).setValue(binaryUrl);
     this.uploadedDocument.get(WriteDocumentFieldDefinitions.DOCUMENT_FILENAME).setValue(filename);
+    const value = {
+      'document_url': url,
+      'document_binary_url': binaryUrl,
+      'document_filename': filename
+    };
+    // this.caseField.value = value;
+    this.uploadedDocument.get('caseValue').setValue(value );
   }
 
   private getErrorMessage(error: HttpError): string {

@@ -23,7 +23,7 @@ export class DocumentManagementService {
     headers.append(DocumentManagementService.HEADER_CONTENT_TYPE, null);
     return this.http
       .post(url, formData, { headers })
-      .pipe(delay( 3000 ))
+      .pipe(delay( 2000 ))
       .pipe(
         map(response => {
           return response.json();
