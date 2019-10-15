@@ -14,24 +14,35 @@ export class FieldTypeSanitiser {
    sanitiseLists(caseFields: CaseField[], editForm: any) {
     this.getDynamicListsFromCaseFields(caseFields).forEach(dynamicField => {
       this.getDeepKeys(editForm['data']).filter(key => key.endsWith(dynamicField.id)).forEach((key) => {
-        let formValue = this.getNestedValue(editForm['data'], key);
-        let value = {
-          value: this.getMatchingCodeFromListOfItems(dynamicField, formValue, key),
-          list_items: dynamicField.list_items
-        };
-        this.setValue(key, value, editForm['data']);
+        if (dynamicField.field_type.type === 'DynamicList') {
+          let formValue = this.getNestedValue(editForm['data'], key);
+          let value = {
+            value: this.getMatchingCodeFromListOfItems(dynamicField, formValue, key),
+            list_items: dynamicField.list_items
+          };
+          this.setValue(key, value, editForm['data']);
+        } else if (dynamicField.field_type.type === 'Collection') {
+          this.sanitiseLists(dynamicField.field_type.collection_field_type.complex_fields, editForm);
+        } else if (dynamicField.field_type.type === 'Complex') {
+          this.sanitiseLists(dynamicField.field_type.complex_fields, editForm);
+        }
       });
     });
   }
 
   private getMatchingCodeFromListOfItems(dynamicField: CaseField, editForm: any, key) {
+    if (!dynamicField.list_items) {
+      return {};
+    }
     let result = dynamicField.list_items.filter(value => value.code === editForm);
     return result.length > 0 ? result[0] : {};
   }
 
   private getDynamicListsFromCaseFields(caseFields: CaseField[]): CaseField[] {
     return caseFields
-      .filter(caseField => (caseField.field_type.type === 'DynamicList'));
+    .filter(caseField => (caseField.field_type.type === 'Collection' ||
+      caseField.field_type.type === 'Complex' ||
+      caseField.field_type.type === 'DynamicList'));
   }
 
   private getDeepKeys(obj) {

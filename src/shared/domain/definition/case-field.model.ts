@@ -47,7 +47,7 @@ export class CaseField implements Orderable {
           .forEach(field => field.list_items = value[field.id].list_items);
     } else if (this.field_type && this.field_type.type === 'Collection') {
       this.field_type.collection_field_type.complex_fields
-          .filter(field => field.field_type.type === 'DynamicList' && value && this.isObject(value[0].value[field.id]))
+          .filter(field => field.field_type.type === 'DynamicList' && value && value[0] && this.isObject(value[0].value[field.id]))
           .forEach(field => field.list_items = value[0].value[field.id].list_items);
     }
     this._value = value;

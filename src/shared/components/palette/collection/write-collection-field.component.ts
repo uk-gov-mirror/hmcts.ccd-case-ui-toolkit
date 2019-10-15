@@ -92,7 +92,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     this.formArray.setErrors(null);
     if (this.hasDynamicListField()) {
       this.caseField.value.push({ value: this.caseField.value[this.caseField.value.length - 1].value });
-      // this.caseField.value.value = null;
     } else {
       this.caseField.value.push({ value: null });
     }
