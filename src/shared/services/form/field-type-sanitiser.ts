@@ -22,7 +22,7 @@ export class FieldTypeSanitiser {
           };
           this.setValue(key, value, editForm['data']);
         } else if (this.isCollectionOfSimpleDynamicListType(dynamicField)) {
-          let dynamicListCollectionValues: any[] = editForm['data'][dynamicField.id];
+          let dynamicListCollectionValues: any[] = this.getNestedValue(editForm['data'], key);
           dynamicListCollectionValues.forEach((formValue, index) => {
             let value = {
               value: this.getMatchingCodeFromListOfItems(dynamicField, formValue.value),
