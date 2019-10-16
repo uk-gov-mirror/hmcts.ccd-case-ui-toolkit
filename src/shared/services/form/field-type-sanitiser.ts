@@ -17,10 +17,19 @@ export class FieldTypeSanitiser {
         if (dynamicField.field_type.type === 'DynamicList') {
           let formValue = this.getNestedValue(editForm['data'], key);
           let value = {
-            value: this.getMatchingCodeFromListOfItems(dynamicField, formValue, key),
+            value: this.getMatchingCodeFromListOfItems(dynamicField, formValue),
             list_items: dynamicField.list_items
           };
           this.setValue(key, value, editForm['data']);
+        } else if (this.isCollectionOfSimpleDynamicListType(dynamicField)) {
+          let dynamicListCollectionValues: any[] = editForm['data'][dynamicField.id];
+          dynamicListCollectionValues.forEach((formValue, index) => {
+            let value = {
+              value: this.getMatchingCodeFromListOfItems(dynamicField, formValue.value),
+              list_items: dynamicField.value[0].value.list_items
+            };
+            editForm['data'][dynamicField.id][index].value = value;
+          });
         } else if (dynamicField.field_type.type === 'Collection') {
           this.sanitiseLists(dynamicField.field_type.collection_field_type.complex_fields, editForm);
         } else if (dynamicField.field_type.type === 'Complex') {
@@ -30,12 +39,25 @@ export class FieldTypeSanitiser {
     });
   }
 
-  private getMatchingCodeFromListOfItems(dynamicField: CaseField, editForm: any, key) {
-    if (!dynamicField.list_items) {
-      return {};
+  private isCollectionOfSimpleDynamicListType(dynamicField: CaseField) {
+    return dynamicField.field_type.collection_field_type &&
+      dynamicField.field_type.collection_field_type.type === 'DynamicList'
+  }
+
+  private getMatchingCodeFromListOfItems(dynamicField: CaseField, formValue: any) {
+    let result = [];
+    if (this.hasListItems(dynamicField)) {
+      // dynamic list inside complex or collection of complex
+      result = dynamicField.list_items.filter(value => value.code === formValue);
+    } else if (dynamicField.value && dynamicField.value[0]) {
+      // dynamic list as a simple collection
+      result = dynamicField.value[0].value.list_items.filter(value => value.code === formValue);
     }
-    let result = dynamicField.list_items.filter(value => value.code === editForm);
     return result.length > 0 ? result[0] : {};
+  }
+
+  private hasListItems(dynamicField: CaseField) {
+    return dynamicField.list_items && dynamicField.list_items.length > 0;
   }
 
   private getDynamicListsFromCaseFields(caseFields: CaseField[]): CaseField[] {
