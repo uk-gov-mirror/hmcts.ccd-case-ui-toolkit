@@ -29,11 +29,13 @@ export class FieldTypeSanitiser {
         } else if (this.isCollectionOfSimpleDynamicListType(dynamicField)) {
           let dynamicListCollectionValues: any[] = this.fieldsUtils.getNestedValue(editForm['data'], key);
           dynamicListCollectionValues.forEach((formValue, index) => {
-            let value = {
-              value: this.getMatchingCodeFromListOfItems(dynamicField, formValue.value),
-              list_items: dynamicField.value[0].value.list_items
-            };
-            editForm['data'][dynamicField.id][index].value = value;
+            if (formValue.value) {
+              let value = {
+                value: this.getMatchingCodeFromListOfItems(dynamicField, formValue.value),
+                list_items: dynamicField.value[0].value.list_items
+              };
+              editForm['data'][dynamicField.id][index].value = value;
+            }
           });
         } else if (dynamicField.field_type.type === 'Collection') {
           this.sanitiseLists(dynamicField.field_type.collection_field_type.complex_fields, editForm);
