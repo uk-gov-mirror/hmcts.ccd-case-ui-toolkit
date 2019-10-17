@@ -104,11 +104,11 @@ ___
     }
 
     private isSimpleTypeOrCollectionOfSimpleTypes(fieldValue) {
-        return !this.isObject(fieldValue) && (this.isArray(fieldValue) ? this.isSimpleArray(fieldValue) : true);
+        return !this.fieldsUtils.isObject(fieldValue) && (this.fieldsUtils.isArray(fieldValue) ? this.isSimpleArray(fieldValue) : true);
     }
 
     private isSimpleArray(fieldValue) {
-        return !this.isObject(fieldValue[0]) && !Array.isArray(fieldValue[0]) && fieldValue[0] !== undefined;
+        return !this.fieldsUtils.isObject(fieldValue[0]) && !Array.isArray(fieldValue[0]) && fieldValue[0] !== undefined;
     }
 
     private isStartingPlaceholder(stringToResolve, scanIndex): boolean {
@@ -194,15 +194,4 @@ ___
             .toString().length : 0;
     }
 
-    private getType(elem): string {
-        return Object.prototype.toString.call(elem).slice(8, -1);
-    }
-
-    private isObject(elem) {
-        return this.getType(elem) === 'Object';
-    };
-
-    private isArray(elem) {
-        return this.getType(elem) === 'Array';
-    };
 }

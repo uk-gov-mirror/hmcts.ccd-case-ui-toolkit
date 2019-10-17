@@ -67,7 +67,7 @@ export class FieldsPurger {
   private resetField(form, field) {
     if (Array.isArray(field.value)) {
       field.value.splice(0, field.value.length);
-    } else if (this.isObject(field.value)) {
+    } else if (this.fieldsUtils.isObject(field.value)) {
       field.value = {};
     } else {
       field.value = '';
@@ -81,14 +81,6 @@ export class FieldsPurger {
       this.resetField(form, case_field);
     });
   }
-
-  private getType(elem): string {
-    return Object.prototype.toString.call(elem).slice(8, -1);
-  }
-
-  private isObject(elem) {
-    return this.getType(elem) === 'Object';
-  };
 
   // TODO: call isReadOnly on CaseFields once we make it available
   private isReadonly(case_field: CaseField) {
