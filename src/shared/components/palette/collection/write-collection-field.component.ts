@@ -117,9 +117,9 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   private hasNonEmptyDynamicListField() {
     return (this.caseField.field_type.collection_field_type.type === 'DynamicList'
       || this.caseField.field_type.collection_field_type.complex_fields
-        .filter(field => field.list_items && field.list_items.length > 0).length > 0
+        .filter(field => field.list_items && field.list_items.length > 0).length > 0)
       && this.caseField.value
-      && this.caseField.value.length > 0);
+      && this.caseField.value.length > 0;
   }
 
   private focusLastItem() {
