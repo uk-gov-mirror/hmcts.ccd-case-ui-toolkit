@@ -174,8 +174,22 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     if (eventTrigger.case_fields) {
       eventTrigger.case_fields
         .filter(element => element.id === caseFieldId)
-        .forEach(element => element.value = jsonData.data[caseFieldId]);
+        .forEach(element => this.updateCaseField(element, jsonData));
     }
+  }
+
+  private updateCaseField(caseField: CaseField, jsonData: CaseEventData) {
+    // populating list_items on Collection level to fix 2c) for PROBATE
+    if (caseField.field_type.type === 'Collection') {
+      let complexFields = caseField.field_type.collection_field_type.complex_fields;
+      complexFields
+        .forEach((field, i) => {
+          if (field.field_type.type === 'DynamicList') {
+            field.list_items = jsonData.data[caseField.id][0].value[field.id].list_items
+          }
+        });
+    }
+    return caseField.value = jsonData.data[caseField.id];
   }
 
   updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {

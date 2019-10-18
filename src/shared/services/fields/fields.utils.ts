@@ -172,9 +172,13 @@ export class FieldsUtils {
   }
 
   getNestedValue(obj, key) {
-    return key.split('.').reduce(function(result, key) {
-      return result[key]
-    }, obj);
+    if (key === '') {
+      return obj;
+    } else {
+      return key.split('.').reduce(function(result, key) {
+        return result[key]
+      }, obj);
+    }
   }
 
   setValue(propertyPath, value, obj) {

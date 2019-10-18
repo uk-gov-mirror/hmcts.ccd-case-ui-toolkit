@@ -41,15 +41,6 @@ export class CaseField implements Orderable {
   }
 
   set value(value: any) {
-    if (this.field_type && this.field_type.type === 'Complex') {
-      this.field_type.complex_fields
-          .filter(field => field.field_type.type === 'DynamicList' && value && this.isObject(value[field.id]))
-          .forEach(field => field.list_items = value[field.id].list_items);
-    } else if (this.field_type && this.field_type.type === 'Collection') {
-      this.field_type.collection_field_type.complex_fields
-          .filter(field => field.field_type.type === 'DynamicList' && value && value[0] && this.isObject(value[0].value[field.id]))
-          .forEach(field => field.list_items = value[0].value[field.id].list_items);
-    }
     this._value = value;
   }
 
@@ -63,7 +54,9 @@ export class CaseField implements Orderable {
   }
 
   set list_items(items: any) {
-    this._list_items = items;
+    if (items && items.length > 0 && this._list_items && this._list_items.length === 0) {
+      this._list_items = items;
+    }
   }
 
   @Expose()
@@ -71,13 +64,5 @@ export class CaseField implements Orderable {
     return !_.isEmpty(this.display_context)
       && this.display_context.toUpperCase() === 'READONLY';
   }
-
-  private getType(elem): string {
-    return Object.prototype.toString.call(elem).slice(8, -1);
-  }
-
-  private isObject(elem) {
-    return this.getType(elem) === 'Object';
-  };
 
 }
