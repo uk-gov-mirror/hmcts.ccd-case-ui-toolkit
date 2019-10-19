@@ -35,7 +35,7 @@ export class FieldTypeSanitiser {
                 value: this.getMatchingCodeFromListOfItems(dynamicField, formValue.value),
                 list_items: dynamicField.value[0].value.list_items
               };
-              editForm['data'][dynamicField.id][index].value = value;
+              editForm[dynamicField.id][index].value = value;
             }
           });
           this.deleteNodeForKey(editFormClone, key);

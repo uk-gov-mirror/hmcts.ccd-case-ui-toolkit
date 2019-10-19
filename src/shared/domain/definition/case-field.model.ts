@@ -31,7 +31,6 @@ export class CaseField implements Orderable {
   private _value: any;
   private _list_items: any = [];
 
-  @Expose()
   get value(): any {
     if (this.field_type && this.field_type.type === 'DynamicList') {
       return this._value && this._value.value ? this._value.value.code : this._value;
@@ -44,19 +43,22 @@ export class CaseField implements Orderable {
     this._value = value;
   }
 
-  @Expose()
   get list_items(): any {
-    if (this.field_type && this.field_type.type === 'DynamicList') {
-      return this._value && this._value.list_items ? this._value.list_items : this._list_items;
+    if (this.field_type && this.field_type.type === 'DynamicList' || this.field_type.type === 'Collection') {
+      if (this._list_items && this._list_items.length > 0) {
+        return this._list_items;
+      }
+      if (this._value && this._value.list_items) {
+        return this._value.list_items;
+      }
+      return undefined;
     } else {
       return this.field_type.fixed_list_items;
     }
   }
 
   set list_items(items: any) {
-    if (items && items.length > 0 && this._list_items && this._list_items.length === 0) {
-      this._list_items = items;
-    }
+    this._list_items = items;
   }
 
   @Expose()
@@ -65,4 +67,12 @@ export class CaseField implements Orderable {
       && this.display_context.toUpperCase() === 'READONLY';
   }
 
+  public isOfType(fieldType: string) {
+    return this.field_type.type === fieldType;
+  }
+
+  public isSimpleCollectionOfType(fieldType: string) {
+    return this.field_type.collection_field_type.complex_fields.length === 0
+      && this.field_type.collection_field_type.type === fieldType;
+  }
 }

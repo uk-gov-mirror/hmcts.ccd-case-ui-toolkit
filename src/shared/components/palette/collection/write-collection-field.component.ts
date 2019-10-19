@@ -90,8 +90,12 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    if (this.hasNonEmptyDynamicListField()) {
-      this.caseField.value.push({ value: this.caseField.value[this.caseField.value.length - 1].value });
+    if (this.isCollectionOfSimpleDynamicList()) {
+      let value = {
+        value: this.caseField.list_items[0].code,
+        list_items: this.caseField.list_items
+      };
+      this.caseField.value.push({ value: value });
     } else {
       this.caseField.value.push({ value: null });
     }
@@ -114,23 +118,8 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     }
   }
 
-  private hasNonEmptyDynamicListField() {
-    return (this.isCollectionOfSimpleDynamicList()
-      || this.isCollectionOfComplexContainingDynamicList())
-      && this.hasNonEmptyValue();
-  }
-
   private isCollectionOfSimpleDynamicList() {
     return this.caseField.field_type.collection_field_type.type === 'DynamicList';
-  }
-
-  private isCollectionOfComplexContainingDynamicList() {
-    return this.caseField.field_type.collection_field_type.complex_fields
-      .filter(field => field.list_items && field.list_items.length > 0).length > 0;
-  }
-
-  private hasNonEmptyValue() {
-    return this.caseField.value && this.caseField.value.length > 0
   }
 
   private focusLastItem() {

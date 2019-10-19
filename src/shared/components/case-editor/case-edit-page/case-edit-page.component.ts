@@ -180,14 +180,28 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
 
   private updateCaseField(caseField: CaseField, jsonData: CaseEventData) {
     // populating list_items on Collection level to fix 2c) for PROBATE
-    if (caseField.field_type.type === 'Collection') {
-      let complexFields = caseField.field_type.collection_field_type.complex_fields;
+    if (caseField.isOfType('Collection')) {
+      if (caseField.isSimpleCollectionOfType('DynamicList')) {
+          caseField.list_items = jsonData.data[caseField.id][0].value.list_items;
+      } else {
+        let complexFields = caseField.field_type.collection_field_type.complex_fields;
+        complexFields
+          .forEach((field, i) => {
+            if (field.isOfType('DynamicList')) {
+              field.list_items = jsonData.data[caseField.id][0].value[field.id].list_items
+            }
+          });
+      }
+    } else if (caseField.isOfType('Complex')) {
+      let complexFields = caseField.field_type.complex_fields;
       complexFields
         .forEach((field, i) => {
-          if (field.field_type.type === 'DynamicList') {
-            field.list_items = jsonData.data[caseField.id][0].value[field.id].list_items
+          if (field.isOfType('DynamicList')) {
+            field.list_items = jsonData.data[caseField.id][field.id].list_items
           }
         });
+    } else if (caseField.field_type.type === 'DynamicList') {
+      caseField.list_items = jsonData.data[caseField.id].list_items;
     }
     return caseField.value = jsonData.data[caseField.id];
   }
