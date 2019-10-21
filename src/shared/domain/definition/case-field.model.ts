@@ -34,8 +34,7 @@ export class CaseField implements Orderable {
   get value(): any {
     if (this.field_type && this.field_type.type === 'DynamicList') {
       return this._value && this._value.value ?
-                this._value.value.code : this._value ?
-                    this._value : { value: {code: '', label: ''}, list_items: this.list_items };
+                this._value.value.code : this._value;
     } else {
       return this._value;
     }

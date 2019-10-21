@@ -30,13 +30,11 @@ export class FieldTypeSanitiser {
         } else if (this.isCollectionOfSimpleDynamicListType(dynamicField)) {
           let dynamicListCollectionValues: any[] = this.fieldsUtils.getNestedValue(editForm, key);
           dynamicListCollectionValues.forEach((formValue, index) => {
-            if (formValue.value) {
-              let value = {
-                value: this.getMatchingCodeFromListOfItems(dynamicField, formValue.value),
-                list_items: dynamicField.value[0].value.list_items
-              };
-              editForm[dynamicField.id][index].value = value;
-            }
+            let value = {
+              value: this.getMatchingCodeFromListOfItems(dynamicField, formValue.value),
+              list_items: dynamicField.list_items
+            };
+            editForm[dynamicField.id][index].value = value;
           });
           this.deleteNodeForKey(editFormClone, key);
         } else if (dynamicField.field_type.type === 'Collection') {
@@ -70,7 +68,7 @@ export class FieldTypeSanitiser {
       // dynamic list as a simple collection
       result = dynamicField.value[0].value.list_items.filter(value => value.code === formValue);
     }
-    return result.length > 0 ? result[0] : {};
+    return result.length > 0 ? result[0] : {code: '', label: ''};
   }
 
   private hasListItems(dynamicField: CaseField) {

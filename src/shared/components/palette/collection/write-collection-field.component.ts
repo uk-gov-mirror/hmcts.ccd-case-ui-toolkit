@@ -101,7 +101,11 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
         let dynamicListFields = this.caseField.getCollectionOfComplexContainingFieldType('DynamicList');
         let complexValue = {};
         dynamicListFields.forEach(field => {
-          complexValue[field.id] = value;
+          complexValue[field.id] = {
+            value: { code: '', label: '' },
+            list_items: field.list_items
+          };
+          field.value = '';
         });
         this.caseField.value.push({ value: complexValue });
       }
