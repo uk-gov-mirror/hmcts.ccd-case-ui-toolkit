@@ -1,0 +1,5 @@
+<div class="form-control-feedback"
+     *ngIf="paymentStatus.errors && (paymentStatus.dirty || paymentStatus.touched)">
+  <p *ngIf="paymentStatus.errors.paymentStatusDomain">Payment status has to come back to signify payment has been processed</p> (1)
+</div>
+<ccpay-payment-lib [API_ROOT]="getBaseURL()" [VIEW]="view" [TAKEPAYMENT]="true" [CCD_CASE_NUMBER]="caseField.value" (paymentStatusEmitter)="processPaymentStatus()"></ccpay-payment-lib>

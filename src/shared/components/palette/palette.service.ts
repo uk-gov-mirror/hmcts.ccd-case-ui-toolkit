@@ -31,7 +31,8 @@ import { WriteAddressFieldComponent } from './address/write-address-field.compon
 import { CaseField } from '../../domain/definition/case-field.model';
 import { WriteOrderSummaryFieldComponent } from './order-summary/write-order-summary-field.component';
 import { ReadOrderSummaryFieldComponent } from './order-summary/read-order-summary-field.component';
-import { CasePaymentHistoryViewerFieldComponent } from './payment/case-payment-history-viewer-field.component';
+import { ReadCasePaymentHistoryViewerFieldComponent } from './payment/read-case-payment-history-viewer-field.component';
+import { WriteCasePaymentHistoryViewerFieldComponent } from './payment/write-case-payment-history-viewer-field.component';
 import { ReadCaseLinkFieldComponent } from './case-link/read-case-link-field.component';
 import { WriteCaseLinkFieldComponent } from './case-link/write-case-link-field.component';
 import { WriteFixedRadioListFieldComponent, ReadFixedRadioListFieldComponent } from './fixed-radio-list';
@@ -86,7 +87,7 @@ export class PaletteService {
       case 'Label':
         return LabelFieldComponent;
       case 'CasePaymentHistoryViewer':
-        return CasePaymentHistoryViewerFieldComponent;
+        return write ? WriteCasePaymentHistoryViewerFieldComponent : ReadCasePaymentHistoryViewerFieldComponent;
       case 'CaseHistoryViewer':
         return CaseHistoryViewerFieldComponent;
       default:

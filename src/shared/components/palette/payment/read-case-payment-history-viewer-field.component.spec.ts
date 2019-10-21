@@ -2,13 +2,13 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DebugElement } from '@angular/core';
 import { FieldType } from '../../../domain/definition/field-type.model';
 import { CaseField } from '../../../domain/definition/case-field.model';
-import { CasePaymentHistoryViewerFieldComponent } from './case-payment-history-viewer-field.component';
+import { ReadCasePaymentHistoryViewerFieldComponent } from './read-case-payment-history-viewer-field.component';
 import { MockComponent } from 'ng2-mock-component';
 import { By } from '@angular/platform-browser';
 import { AbstractAppConfig } from '../../../../app.config';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('CasePaymentHistoryViewerFieldComponent', () => {
+describe('ReadCasePaymentHistoryViewerFieldComponent', () => {
 
   const FIELD_TYPE: FieldType = {
     id: 'CasePaymentHistoryViewer',
@@ -26,8 +26,8 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
   let appConfig;
   let PaymentWebComponent;
 
-  let fixture: ComponentFixture<CasePaymentHistoryViewerFieldComponent>;
-  let component: CasePaymentHistoryViewerFieldComponent;
+  let fixture: ComponentFixture<ReadCasePaymentHistoryViewerFieldComponent>;
+  let component: ReadCasePaymentHistoryViewerFieldComponent;
   let de: DebugElement;
 
   beforeEach(async(() => {
@@ -43,7 +43,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
       .configureTestingModule({
         imports: [],
         declarations: [
-          CasePaymentHistoryViewerFieldComponent,
+          ReadCasePaymentHistoryViewerFieldComponent,
 
           // Mocks
           PaymentWebComponent
@@ -54,7 +54,7 @@ describe('CasePaymentHistoryViewerFieldComponent', () => {
       })
       .compileComponents();
 
-    fixture = TestBed.createComponent(CasePaymentHistoryViewerFieldComponent);
+    fixture = TestBed.createComponent(ReadCasePaymentHistoryViewerFieldComponent);
     component = fixture.componentInstance;
 
     component.caseField = CASE_FIELD;

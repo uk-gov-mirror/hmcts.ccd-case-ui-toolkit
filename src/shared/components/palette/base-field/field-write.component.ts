@@ -34,16 +34,21 @@ export class FieldWriteComponent extends AbstractFieldWriteComponent implements 
 
   ngOnInit(): void {
     let componentClass = this.paletteService.getFieldComponentClass(this.caseField, true);
-
+console.log('componentClass=', componentClass);
     let injector = Injector.create([], this.fieldContainer.parentInjector);
     let component = this.resolver.resolveComponentFactory(componentClass).create(injector);
-
+    console.log('component=', component);
     // Provide component @Inputs
     component.instance['caseField'] = plainToClassFromExist(new CaseField(), this.caseField);
+    console.log('caseField=', this.caseField);
     component.instance['caseFields'] = this.caseFields;
+    console.log('caseFields=', this.caseFields);
     component.instance['formGroup'] = this.formGroup;
+    console.log('formGroup=', this.formGroup);
     component.instance['registerControl'] = this.registerControl || this.defaultControlRegister();
+    console.log('registerControl=', this.registerControl);
     component.instance['idPrefix'] = this.idPrefix;
+    console.log('idPrefix=', this.idPrefix);
     if (this.caseField.field_type.id === 'AddressGlobal') {
       component.instance['ignoreMandatory'] = true;
     }

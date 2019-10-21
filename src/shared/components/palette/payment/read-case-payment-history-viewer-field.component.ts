@@ -3,10 +3,10 @@ import { Component } from '@angular/core';
 import { AbstractAppConfig } from '../../../../app.config';
 
 @Component({
-  selector: 'ccd-case-payment-history-viewer-field',
-  templateUrl: 'case-payment-history-viewer-field.html',
+  selector: 'read-ccd-case-payment-history-viewer-field',
+  templateUrl: 'read-case-payment-history-viewer-field.html',
 })
-export class CasePaymentHistoryViewerFieldComponent extends AbstractFieldReadComponent {
+export class ReadCasePaymentHistoryViewerFieldComponent extends AbstractFieldReadComponent {
 
   constructor(
     private appConfig: AbstractAppConfig
