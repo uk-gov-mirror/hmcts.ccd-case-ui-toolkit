@@ -8,6 +8,7 @@ import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
 import { Profile } from '../../../domain/profile';
+import { ActivatedRoute } from '@angular/router';
 import { ProfileNotifier } from '../../../services';
 
 @Component({
@@ -89,12 +90,21 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    if (this.caseField.isSimpleCollectionOfType('DynamicList')) {
-        let value = {
-          value: { code: '', label: ''},
-          list_items: this.caseField.list_items
-        };
+    if (this.caseField.isCollection()) {
+      let value = {
+        value: { code: '', label: ''},
+        list_items: this.caseField.list_items
+      };
+      if (this.caseField.isSimpleCollectionOfType('DynamicList')) {
         this.caseField.value.push({ value: value });
+      } else if (this.caseField.isCollectionOfComplexContainingFieldType('DynamicList')) {
+        let dynamicListFields = this.caseField.getCollectionOfComplexContainingFieldType('DynamicList');
+        let complexValue = {};
+        dynamicListFields.forEach(field => {
+          complexValue[field.id] = value;
+        });
+        this.caseField.value.push({ value: complexValue });
+      }
     } else {
       this.caseField.value.push({ value: null });
     }
