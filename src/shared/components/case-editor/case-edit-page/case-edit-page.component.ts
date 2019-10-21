@@ -181,13 +181,13 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   private updateCaseField(caseField: CaseField, jsonData: CaseEventData) {
     // populating list_items on Collection level to fix 2c) for PROBATE
     if (caseField.isOfType('Collection')) {
-      if (caseField.isSimpleCollectionOfType('DynamicList') && this.isEmptyCollection(jsonData, caseField.id)) {
+      if (caseField.isSimpleCollectionOfType('DynamicList') && this.isCollectionWithItem(jsonData, caseField.id)) {
           caseField.list_items = jsonData.data[caseField.id][0].value.list_items;
       } else {
         let complexFields = caseField.field_type.collection_field_type.complex_fields;
         complexFields
           .forEach((field, i) => {
-            if (field.isOfType('DynamicList') && this.isEmptyCollection(jsonData, caseField.id)) {
+            if (field.isOfType('DynamicList') && this.isCollectionWithItem(jsonData, caseField.id)) {
               field.list_items = jsonData.data[caseField.id][0].value[field.id].list_items
             }
           });
@@ -206,8 +206,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
     return caseField.value = jsonData.data[caseField.id];
   }
 
-  private isEmptyCollection(jsonData, caseField): boolean {
-    return jsonData.data[caseField.id][0];
+  private isCollectionWithItem(jsonData, caseFieldId): boolean {
+    return jsonData.data[caseFieldId][0];
   }
 
   updateFormControlsValue(formGroup: FormGroup, caseFieldId: string, value: any): void {
