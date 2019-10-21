@@ -33,7 +33,9 @@ export class CaseField implements Orderable {
 
   get value(): any {
     if (this.field_type && this.field_type.type === 'DynamicList') {
-      return this._value && this._value.value ? this._value.value.code : this._value;
+      return this._value && this._value.value ?
+                this._value.value.code : this._value ?
+                    this._value : { value: {code: '', label: ''}, list_items: this.list_items };
     } else {
       return this._value;
     }
@@ -45,13 +47,7 @@ export class CaseField implements Orderable {
 
   get list_items(): any {
     if (this.field_type && this.field_type.type === 'DynamicList' || this.field_type.type === 'Collection') {
-      if (this._list_items && this._list_items.length > 0) {
-        return this._list_items;
-      }
-      if (this._value && this._value.list_items) {
-        return this._value.list_items;
-      }
-      return undefined;
+      return this._value && this._value.list_items ? this._value.list_items : this._list_items;
     } else {
       return this.field_type.fixed_list_items;
     }
@@ -71,8 +67,29 @@ export class CaseField implements Orderable {
     return this.field_type.type === fieldType;
   }
 
+  public isCollection() {
+    return this.field_type.type === 'Collection';
+  }
+
   public isSimpleCollectionOfType(fieldType: string) {
     return this.field_type.collection_field_type.complex_fields.length === 0
       && this.field_type.collection_field_type.type === fieldType;
+  }
+
+  public isComplexCollection() {
+    return this.field_type.collection_field_type.complex_fields.length > 0
+      && this.field_type.collection_field_type.type === 'Complex';
+  }
+
+  public isCollectionOfComplexContainingFieldType(type) {
+    return this.isComplexCollection()
+      && this.field_type.collection_field_type.complex_fields.filter(field => field.isOfType(type));
+  }
+
+  public getCollectionOfComplexContainingFieldType(type) {
+    if (this.isComplexCollection()) {
+      return this.field_type.collection_field_type.complex_fields.filter(field => field.isOfType(type));
+    }
+    return [];
   }
 }

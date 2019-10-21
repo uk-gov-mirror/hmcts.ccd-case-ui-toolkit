@@ -14,6 +14,11 @@ export class FieldsFilterPipe implements PipeTransform {
     {}
   ];
 
+  private static readonly DYNAMIC_LIST_EMPTY_VALUE = {
+      code: '',
+      label: ''
+  };
+
   private static readonly NESTED_TYPES = {
     'Complex': FieldsFilterPipe.isValidComplex
   };
@@ -39,7 +44,13 @@ export class FieldsFilterPipe implements PipeTransform {
 
   private static isEmpty(value: any): boolean {
     return FieldsFilterPipe.EMPTY_VALUES.indexOf(value) !== -1
+      || this.isDynamicListEmpty(value)
       || value.length === 0;
+  }
+
+  private static isDynamicListEmpty(value: any): boolean {
+    return value && value.value && value.value.code === FieldsFilterPipe.DYNAMIC_LIST_EMPTY_VALUE.code
+      && value.value.label === FieldsFilterPipe.DYNAMIC_LIST_EMPTY_VALUE.label;
   }
 
   private static isCompound(field: CaseField): boolean {

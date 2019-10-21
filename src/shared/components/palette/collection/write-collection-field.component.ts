@@ -8,7 +8,6 @@ import { RemoveDialogComponent } from '../../dialogs/remove-dialog/remove-dialog
 import { ScrollToService } from '@nicky-lenaers/ngx-scroll-to';
 import { finalize } from 'rxjs/operators';
 import { Profile } from '../../../domain/profile';
-import { ActivatedRoute } from '@angular/router';
 import { ProfileNotifier } from '../../../services';
 
 @Component({
@@ -90,12 +89,12 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
   addItem(doScroll: boolean): void {
     // Manually resetting errors is required to prevent `ExpressionChangedAfterItHasBeenCheckedError`
     this.formArray.setErrors(null);
-    if (this.isCollectionOfSimpleDynamicList()) {
-      let value = {
-        value: this.caseField.list_items[0].code,
-        list_items: this.caseField.list_items
-      };
-      this.caseField.value.push({ value: value });
+    if (this.caseField.isSimpleCollectionOfType('DynamicList')) {
+        let value = {
+          value: { code: '', label: ''},
+          list_items: this.caseField.list_items
+        };
+        this.caseField.value.push({ value: value });
     } else {
       this.caseField.value.push({ value: null });
     }
@@ -116,10 +115,6 @@ export class WriteCollectionFieldComponent extends AbstractFieldWriteComponent i
     } else {
       setTimeout(() => this.focusLastItem());
     }
-  }
-
-  private isCollectionOfSimpleDynamicList() {
-    return this.caseField.field_type.collection_field_type.type === 'DynamicList';
   }
 
   private focusLastItem() {
