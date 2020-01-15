@@ -181,5 +181,4 @@ Travis build system automatically publish NPM packages including GitHub releases
 Prerelease version from PR branch should follow the format as `x.y.z-RDM-xxx-prerelease`
 
 ## LICENSE
-
 This project is licensed under the MIT License - see the [LICENSE](LICENSE.md) file for details.
