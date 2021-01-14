@@ -26,7 +26,7 @@ import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser'
 import { text } from '../../../test/helpers';
 import createSpyObj = jasmine.createSpyObj;
 
-describe('CaseEditPageComponent', () => {
+fdescribe('CaseEditPageComponent', () => {
 
   let de: DebugElement;
   const $SELECT_SUBMIT_BUTTON = By.css('button[type=submit]');
@@ -38,6 +38,7 @@ describe('CaseEditPageComponent', () => {
   const $SELECT_CALLBACK_DATA_FIELD_ERROR_LIST = By.css('.error-summary-list');
   const $SELECT_FIRST_FIELD_ERROR = By.css('li:first-child');
   const $SELECT_SECOND_FIELD_ERROR = By.css('li:nth-child(2)');
+  const $SELECT_VALIDATION_ERROR_SUMMARY = By.css('.govuk-error-summary');
 
   const ERROR_HEADING_GENERIC = 'Something went wrong';
   const ERROR_MESSAGE_GENERIC = 'We\'re working to fix the problem. Try again shortly.';
@@ -322,6 +323,36 @@ describe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeFalsy();
     });
 
+    fit('should validate Mandatory Fields and add error message in summary', () => {      
+      wizardPage.case_fields.push(aCaseField('fieldX', 'fieldX', 'Text', 'MANDATORY', null));
+      wizardPage.isMultiColumn = () => false;
+      comp.currentPage = wizardPage;
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeFalsy();
+
+      //let field2 = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', null);
+      //let field3 = aCaseFieldWithValue('field3', 'field3', 'ABCD', 'Document', 'MANDATORY', null) ;
+      //wizardPage.case_fields.push(field3);
+      // wizardPage.isMultiColumn = () => false;
+      // comp.currentPage = wizardPage;
+      // fixture.detectChanges();
+      // expect(comp.currentPageIsNotValid()).toBeTruthy(); 
+      //console.log(wizardPage.case_fields.length);
+      //comp.editForm.addControl('data', new FormControl(field3));
+      //console.log(comp.editForm.controls['data']);
+      //console.log(wizardPage.case_fields[0].value);
+      // wizardPage.case_fields.filter(casefield => !caseFieldService.isReadOnly(casefield))
+      //     .filter(casefield => !pageValidationService.isHidden(casefield, comp.editForm.getRawValue()))
+      //     .forEach(casefield => {            
+      //       console.log(comp.editForm.controls['data'].get(casefield.id));            
+      //     }); 
+    
+      //comp.generateErrorMessage(wizardPage.case_fields);
+      //expect(comp.validationErrors.length).toBeGreaterThan(0);
+     
+    
+    });
+
     it('should return "Return to case list" as cancel button text if save and resume enabled for event', () => {
       wizardPage.isMultiColumn = () => true;
       comp.currentPage = wizardPage;
@@ -407,7 +438,7 @@ describe('CaseEditPageComponent', () => {
       fixture.detectChanges();
 
       let cancelText = comp.getCancelText();
-      console.log(cancelText);
+      
       expect(cancelText).toEqual('Cancel');
     });
 
