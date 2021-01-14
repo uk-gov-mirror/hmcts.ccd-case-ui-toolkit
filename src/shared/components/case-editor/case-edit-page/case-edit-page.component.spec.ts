@@ -328,7 +328,17 @@ fdescribe('CaseEditPageComponent', () => {
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
       fixture.detectChanges();
-      expect(comp.currentPageIsNotValid()).toBeFalsy();
+      
+      expect(comp.currentPageIsNotValid()).toBeTruthy();
+      comp.generateErrorMessage(wizardPage.case_fields);
+
+      fixture.whenStable().then(() => {
+        const error = de.query($SELECT_ERROR_SUMMARY);
+        expect(error).toBeTruthy();
+
+        const errorHeading = error.query($SELECT_ERROR_HEADING_GENERIC);
+        expect(text(errorHeading)).toBe(ERROR_HEADING_GENERIC);
+      });
 
       //let field2 = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', null);
       //let field3 = aCaseFieldWithValue('field3', 'field3', 'ABCD', 'Document', 'MANDATORY', null) ;
