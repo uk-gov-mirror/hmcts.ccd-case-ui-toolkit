@@ -128,11 +128,14 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
   }
 
   // Adding validation message to show it as Error Summary
-  generateErrorMessage(fields: CaseField[]){   
+  generateErrorMessage(fields: CaseField[]){
     fields.filter(casefield => !this.caseFieldService.isReadOnly(casefield))
           .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm.getRawValue()))
           .forEach(casefield => {
-            const fieldElement = this.editForm.controls['data'].get(casefield.id);               
+            const fieldElement = this.editForm.controls['data'].get(casefield.id);      
+            
+            //console.log(casefield);
+            console.log(this.editForm.controls['data'].get(casefield.id));
             
             if(fieldElement && fieldElement.hasError('required')){               
               this.validationErrors.push({id:casefield.id, message:`${casefield.label} is required`});

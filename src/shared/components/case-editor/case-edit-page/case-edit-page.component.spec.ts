@@ -60,6 +60,7 @@ fdescribe('CaseEditPageComponent', () => {
   const FORM_GROUP = new FormGroup({
     'data': new FormGroup({'field1': new FormControl('SOME_VALUE')})
   });
+
   const WIZARD = new Wizard([wizardPage]);
   let someObservable = {
     'subscribe': () => new Draft()
@@ -327,18 +328,14 @@ fdescribe('CaseEditPageComponent', () => {
       wizardPage.case_fields.push(aCaseField('fieldX', 'fieldX', 'Text', 'MANDATORY', null));
       wizardPage.isMultiColumn = () => false;
       comp.currentPage = wizardPage;
+      comp.editForm = FORM_GROUP;
+      comp.editForm.addControl('fieldX', new FormControl(null));
+
+      console.log(comp.editForm.controls)
       fixture.detectChanges();
       
       expect(comp.currentPageIsNotValid()).toBeTruthy();
       comp.generateErrorMessage(wizardPage.case_fields);
-
-      fixture.whenStable().then(() => {
-        const error = de.query($SELECT_ERROR_SUMMARY);
-        expect(error).toBeTruthy();
-
-        const errorHeading = error.query($SELECT_ERROR_HEADING_GENERIC);
-        expect(text(errorHeading)).toBe(ERROR_HEADING_GENERIC);
-      });
 
       //let field2 = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', null);
       //let field3 = aCaseFieldWithValue('field3', 'field3', 'ABCD', 'Document', 'MANDATORY', null) ;
