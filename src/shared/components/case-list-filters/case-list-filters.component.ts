@@ -41,8 +41,8 @@ export class CaseListFiltersComponent implements OnInit {
   }
 
   onWrapperReset(value) {
-    this.onReset.emit(value);
     this.ngOnInit();
+    this.onReset.emit(value);
   }
 
 }
