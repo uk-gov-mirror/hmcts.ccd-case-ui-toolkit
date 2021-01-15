@@ -15,6 +15,7 @@ export class PageValidationService {
       .filter(caseField => !this.isHidden(caseField, editForm.getRawValue()))
       .every(caseField => {
         let theControl = editForm.controls['data'].get(caseField.id);
+        //console.log(theControl);
         return this.checkDocumentField(caseField, theControl) && this.checkOptionalField(caseField, theControl);
       });
   }
@@ -35,6 +36,8 @@ export class PageValidationService {
     const isOptionalField = (!theControl && this.caseFieldService.isOptional(caseField));
     const isNotRequiredField = (theControl && (theControl.valid || theControl.disabled));
 
+    //console.log(`Is Optional ${isOptionalField}`);
+    //console.log(`Is Not Required ${isNotRequiredField}`);
     return isOptionalField || isNotRequiredField;
   }
 

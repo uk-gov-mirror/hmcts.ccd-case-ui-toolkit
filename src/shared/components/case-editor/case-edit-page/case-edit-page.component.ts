@@ -133,10 +133,8 @@ export class CaseEditPageComponent implements OnInit, AfterViewChecked {
           .filter(casefield => !this.pageValidationService.isHidden(casefield, this.editForm.getRawValue()))
           .forEach(casefield => {
             const fieldElement = this.editForm.controls['data'].get(casefield.id);      
-            
-            //console.log(casefield);
-            console.log(this.editForm.controls['data'].get(casefield.id));
-            
+            //console.log(casefield.id);     
+            //console.log(fieldElement);
             if(fieldElement && fieldElement.hasError('required')){               
               this.validationErrors.push({id:casefield.id, message:`${casefield.label} is required`});
               fieldElement.markAsTouched();    

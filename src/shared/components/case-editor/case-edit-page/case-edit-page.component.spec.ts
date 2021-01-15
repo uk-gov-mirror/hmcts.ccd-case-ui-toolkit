@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 import { CaseEditComponent } from '../case-edit/case-edit.component';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialog, MatDialogRef } from '@angular/material';
 import { FormValueService } from '../../../services/form/form-value.service';
 import { FormErrorService } from '../../../services/form/form-error.service';
@@ -38,12 +38,15 @@ fdescribe('CaseEditPageComponent', () => {
   const $SELECT_CALLBACK_DATA_FIELD_ERROR_LIST = By.css('.error-summary-list');
   const $SELECT_FIRST_FIELD_ERROR = By.css('li:first-child');
   const $SELECT_SECOND_FIELD_ERROR = By.css('li:nth-child(2)');
-  const $SELECT_VALIDATION_ERROR_SUMMARY = By.css('.govuk-error-summary');
+  //const $SELECT_VALIDATION_ERROR_SUMMARY = By.css('.govuk-error-summary');
+  //const $SELECT_VALIDATION_ERROR_SUMMARY_HEADING = By.css('.govuk-error-summary__title');
 
   const ERROR_HEADING_GENERIC = 'Something went wrong';
   const ERROR_MESSAGE_GENERIC = 'We\'re working to fix the problem. Try again shortly.';
-  const ERROR_HEADING_SPECIFIC = 'The event could not be created'
-  const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors'
+  const ERROR_HEADING_SPECIFIC = 'The event could not be created';
+  const ERROR_MESSAGE_SPECIFIC = 'There are field validation errors';
+  //const ERROR_HEADING_VALIDATION_SUMMARY = 'There is a problem';
+
 
   let comp: CaseEditPageComponent;
   let fixture: ComponentFixture<CaseEditPageComponent>;
@@ -325,38 +328,44 @@ fdescribe('CaseEditPageComponent', () => {
     });
 
     fit('should validate Mandatory Fields and add error message in summary', () => {      
-      wizardPage.case_fields.push(aCaseField('fieldX', 'fieldX', 'Text', 'MANDATORY', null));
+      wizardPage.case_fields.push(aCaseField('fieldx', 'fieldx', 'Text', 'MANDATORY', null));
+      //wizardPage.case_fields.push(aCaseField('field2', 'field2', 'Text', 'MANDATORY', null));
       wizardPage.isMultiColumn = () => false;
-      comp.currentPage = wizardPage;
-      comp.editForm = FORM_GROUP;
-      comp.editForm.addControl('fieldX', new FormControl(null));
-
-      console.log(comp.editForm.controls)
-      fixture.detectChanges();
       
-      expect(comp.currentPageIsNotValid()).toBeTruthy();
-      comp.generateErrorMessage(wizardPage.case_fields);
+      //FORM_GROUP.addControl('field2', new FormControl(null, Validators.required))
+      const f_group = new FormGroup({
+        'data': new FormGroup({'fieldx': new FormControl(null, [Validators.required])})
+                            //,'field2': new FormControl(null, Validators.required)})
+      });
 
-      //let field2 = aCaseField('field2', 'field2', 'Text', 'OPTIONAL', null);
-      //let field3 = aCaseFieldWithValue('field3', 'field3', 'ABCD', 'Document', 'MANDATORY', null) ;
-      //wizardPage.case_fields.push(field3);
-      // wizardPage.isMultiColumn = () => false;
-      // comp.currentPage = wizardPage;
-      // fixture.detectChanges();
-      // expect(comp.currentPageIsNotValid()).toBeTruthy(); 
-      //console.log(wizardPage.case_fields.length);
-      //comp.editForm.addControl('data', new FormControl(field3));
-      //console.log(comp.editForm.controls['data']);
-      //console.log(wizardPage.case_fields[0].value);
-      // wizardPage.case_fields.filter(casefield => !caseFieldService.isReadOnly(casefield))
-      //     .filter(casefield => !pageValidationService.isHidden(casefield, comp.editForm.getRawValue()))
-      //     .forEach(casefield => {            
-      //       console.log(comp.editForm.controls['data'].get(casefield.id));            
-      //     }); 
-    
-      //comp.generateErrorMessage(wizardPage.case_fields);
-      //expect(comp.validationErrors.length).toBeGreaterThan(0);
-     
+      caseEditComponentStub.form = f_group;
+      // comp.editForm.controls['data'].setValidators([Validators.required]);
+      // comp.editForm.controls['data'].updateValueAndValidity();
+      comp.currentPage = wizardPage;
+      //comp.editForm.addControl('fieldX', new FormControl(null,Validators.required));
+      console.log(comp.editForm.value);
+      fixture.detectChanges();
+      expect(comp.currentPageIsNotValid()).toBeTruthy();      
+      
+      comp.generateErrorMessage(wizardPage.case_fields);
+      let errorMessage ='';
+      if(comp.validationErrors.length > 0){
+        errorMessage = comp.validationErrors[0].message;
+      }      
+      expect(errorMessage).toEqual('fieldx is required');
+
+
+
+      // fixture.whenStable().then(() => {
+      //   const error = de.query($SELECT_VALIDATION_ERROR_SUMMARY);
+      //   expect(error).toBeTruthy();
+      //   console.log(error);
+      //   // const errorHeading = error.query($SELECT_VALIDATION_ERROR_SUMMARY_HEADING);
+      //   // expect(text(errorHeading)).toBe(ERROR_HEADING_VALIDATION_SUMMARY);
+
+      //   // const errorMessage = error.query($SELECT_ERROR_MESSAGE_GENERIC);
+      //   // expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
+      // });          
     
     });
 
@@ -821,6 +830,92 @@ fdescribe('CaseEditPageComponent', () => {
         expect(formValueService.sanitiseDynamicLists).toHaveBeenCalled();
       });
     });
+  });
+
+
+  describe('Check for Validation Error', () => {
+
+    const F_GROUP = new FormGroup({
+      'data': new FormGroup({'field1': new FormControl(null, Validators.required)
+                              ,'field2': new FormControl(null, Validators.required)
+                            })
+    });
+
+    beforeEach(async(() => {
+      firstPage.id = 'first page';
+      cancelled = createSpyObj('cancelled', ['emit']);      
+    
+      caseEditComponentStub = {
+        'form': F_GROUP,
+        'wizard': WIZARD,
+        'data': '',
+        'eventTrigger': {'case_fields': [], 'name': 'Test event trigger name', 'can_save_draft': false},
+        'hasPrevious': () => true,
+        'getPage': () => firstPage,
+        'first': () => true,
+        'next': () => true,
+        'previous': () => true,
+        'cancel': () => undefined,
+        'cancelled': cancelled,
+        'validate': (caseEventData: CaseEventData) => of(caseEventData),
+        'saveDraft': (caseEventData: CaseEventData) => of(someObservable),
+        'caseDetails': {'case_id': '1234567812345678', 'tabs': [], 'metadataFields': []},
+      };
+      snapshot = {
+        queryParamMap: createSpyObj('queryParamMap', ['get']),
+      };
+      route = {
+        params: of({id: 123}),
+        snapshot: snapshot
+      };
+
+      matDialogRef = createSpyObj<MatDialogRef<SaveOrDiscardDialogComponent>>('MatDialogRef', ['afterClosed', 'close']);
+      dialog = createSpyObj<MatDialog>('dialog', ['open']);
+      dialog.open.and.returnValue(matDialogRef);
+
+      spyOn(caseEditComponentStub, 'first');
+      spyOn(caseEditComponentStub, 'next');
+      spyOn(caseEditComponentStub, 'previous');
+      TestBed.configureTestingModule({
+        declarations: [CaseEditPageComponent,
+          CaseReferencePipe],
+        schemas: [NO_ERRORS_SCHEMA],
+        providers: [
+          {provide: FormValueService, useValue: formValueService},
+          {provide: FormErrorService, useValue: formErrorService},
+          {provide: CaseEditComponent, useValue: caseEditComponentStub},
+          {provide: PageValidationService, useValue: pageValidationService},
+          {provide: ActivatedRoute, useValue: route},
+          {provide: MatDialog, useValue: dialog},
+          {provide: CaseFieldService, useValue: caseFieldService}
+        ]
+      }).compileComponents();
+    }));
+
+    beforeEach(() => {
+      fixture = TestBed.createComponent(CaseEditPageComponent);
+      comp = fixture.componentInstance;
+      readOnly.display_context = 'READONLY';
+      wizardPage = createWizardPage([createCaseField('field1', 'field1Value')], true);
+      comp.currentPage = wizardPage;
+    });
+
+    it('should validate Mandatory Fields and add error message in summary', () => {      
+        wizardPage.case_fields.push(aCaseField('field1', 'field1', 'Text', 'MANDATORY', null));
+        wizardPage.case_fields.push(aCaseField('field2', 'field2', 'Text', 'MANDATORY', null));
+        wizardPage.isMultiColumn = () => false;                    
+  
+        comp.editForm = F_GROUP;        
+        comp.currentPage = wizardPage;     
+        fixture.detectChanges();
+        expect(comp.currentPageIsNotValid()).toBeTruthy();      
+        
+        comp.generateErrorMessage(wizardPage.case_fields);
+        comp.validationErrors.forEach(error =>{
+          expect(error.message).toEqual(`${error.id} is required`)
+        });        
+      
+      });
   });
 
   function createCaseField(id: string, value: any, display_context = 'READONLY'): CaseField {
