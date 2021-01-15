@@ -26,7 +26,7 @@ import { FieldTypeSanitiser } from '../../../services/form/field-type-sanitiser'
 import { text } from '../../../test/helpers';
 import createSpyObj = jasmine.createSpyObj;
 
-fdescribe('CaseEditPageComponent', () => {
+describe('CaseEditPageComponent', () => {
 
   let de: DebugElement;
   const $SELECT_SUBMIT_BUTTON = By.css('button[type=submit]');
@@ -327,7 +327,7 @@ fdescribe('CaseEditPageComponent', () => {
       expect(comp.currentPageIsNotValid()).toBeFalsy();
     });
 
-    fit('should validate Mandatory Fields and add error message in summary', () => {      
+    /*it('should validate Mandatory Fields and add error message in summary', () => {      
       wizardPage.case_fields.push(aCaseField('fieldx', 'fieldx', 'Text', 'MANDATORY', null));
       //wizardPage.case_fields.push(aCaseField('field2', 'field2', 'Text', 'MANDATORY', null));
       wizardPage.isMultiColumn = () => false;
@@ -367,7 +367,7 @@ fdescribe('CaseEditPageComponent', () => {
       //   // expect(text(errorMessage)).toBe(ERROR_MESSAGE_GENERIC);
       // });          
     
-    });
+    });*/
 
     it('should return "Return to case list" as cancel button text if save and resume enabled for event', () => {
       wizardPage.isMultiColumn = () => true;
@@ -836,8 +836,8 @@ fdescribe('CaseEditPageComponent', () => {
   describe('Check for Validation Error', () => {
 
     const F_GROUP = new FormGroup({
-      'data': new FormGroup({'field1': new FormControl(null, Validators.required)
-                              ,'field2': new FormControl(null, Validators.required)
+      'data': new FormGroup({'field3': new FormControl(null, Validators.required)
+                              ,'field4': new FormControl(null, Validators.required)
                             })
     });
 
@@ -901,8 +901,8 @@ fdescribe('CaseEditPageComponent', () => {
     });
 
     it('should validate Mandatory Fields and add error message in summary', () => {      
-        wizardPage.case_fields.push(aCaseField('field1', 'field1', 'Text', 'MANDATORY', null));
-        wizardPage.case_fields.push(aCaseField('field2', 'field2', 'Text', 'MANDATORY', null));
+        wizardPage.case_fields.push(aCaseField('field3', 'field3', 'Text', 'MANDATORY', null));
+        wizardPage.case_fields.push(aCaseField('field4', 'field4', 'Text', 'MANDATORY', null));
         wizardPage.isMultiColumn = () => false;                    
   
         comp.editForm = F_GROUP;        
