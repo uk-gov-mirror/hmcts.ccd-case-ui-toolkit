@@ -1,5 +1,8 @@
 ## RELEASE NOTES
 
+### Version 2.72.10-check-your-answers
+**EUI-3452** Additional fix for show/hide conditions on Check Your Answers page.
+
 ### Version 2.72.9-fix-case-submission
 **EUI-3494** Fixed the missing case ID on case creation.
 **EUI-3495** Fixed an issue where the user was return to Case list following case creation.
