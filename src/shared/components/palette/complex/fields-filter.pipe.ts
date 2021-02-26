@@ -88,11 +88,17 @@ export class FieldsFilterPipe implements PipeTransform {
     const fields = complexField.field_type.complex_fields || [];
     const values = complexField.value || {};
     const checkConditionsAgainst = { [complexField.id]: values };
+    const deeplyNestedMatch = `.${complexField.id}.`;
 
     return fields
       .filter( f => {
         if (stripHidden && f.show_condition) {
-          const cond = ShowCondition.getInstance(f.show_condition)
+          let show_condition = f.show_condition;
+          // If this is deeply nested, adjust the show_condition.
+          if (show_condition.indexOf(deeplyNestedMatch) > 0) {
+            show_condition = `${complexField.id}.${show_condition.split(deeplyNestedMatch)[1]}`;
+          }
+          const cond = ShowCondition.getInstance(show_condition)
           return cond.match(checkConditionsAgainst);
         }
         return true;
