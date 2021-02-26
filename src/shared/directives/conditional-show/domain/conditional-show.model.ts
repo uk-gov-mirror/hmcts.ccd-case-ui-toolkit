@@ -103,7 +103,17 @@ export class ShowCondition {
     if (expectedValue.search('[,]') > -1) { // for  multi-select list
       return this.checkMultiSelectListEquals(expectedValue, currentValue, conditionSeparaor);
     } else if (expectedValue.endsWith('*') && currentValue && conditionSeparaor !== ShowCondition.CONDITION_NOT_EQUALS) {
-      return currentValue.startsWith(this.removeStarChar(expectedValue));
+      // Spotted that there were console errors in here. This is because currentValue
+      // can be something other than a string, yet was being treated as a string in
+      // the tests. In the particular scenario I saw, the expected value was "*",
+      // which sounds entirely reasonable when you want to make sure a value exists
+      // of any type.
+      if (typeof(currentValue) === 'string') {
+        return currentValue.startsWith(this.removeStarChar(expectedValue));
+      }
+
+      // Simply "*" on its own means "match anything non-null".
+      return expectedValue === '*';
     } else {
       // changed from '===' to '==' to cover number field conditions
       if (conditionSeparaor === ShowCondition.CONDITION_NOT_EQUALS) {
